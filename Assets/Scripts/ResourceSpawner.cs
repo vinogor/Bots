@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
 {
-    [SerializeField] private int _quantity = 5;
+    [SerializeField] private int _quantity = 10;
     [SerializeField] private Resource _resourcePrefab;
 
     private List<Resource> _resources;
 
-    // если Start(), то при поиске ресурсов - они ещё не заспавнились
-    private void OnEnable()
+    private void Start()
     {
         _resources = new List<Resource>();
         Vector3 center = transform.position;

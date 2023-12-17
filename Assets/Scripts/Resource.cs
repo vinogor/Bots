@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class Resource : MonoBehaviour
+public class Resource : MonoBehaviour, IBusyness
 {
-    private bool _isMarkedForHarvest = false;
+    private bool _isBusy = false;
 
-    public void SetIsMarkedForHarvest()
+    public void SetBusy()
     {
-        _isMarkedForHarvest = true;
+        _isBusy = true;
     }
 
-    public bool GetIsMarkedForHarvest()
+    public bool IsBusy()
     {
-        return _isMarkedForHarvest;
+        return _isBusy;
     }
 }

@@ -1,26 +1,24 @@
 using UnityEngine;
 
-public class BotCollector : MonoBehaviour
+public class BotCollector : MonoBehaviour, IBusyness
 {
     private Resource _resource;
     private Vector3 _basePosition;
     private BotMover _botMover;
-    private bool _isFree;
-
-    public bool IsFree => _isFree;
+    private bool _isBusy;
 
     private void Start()
     {
         _basePosition = transform.position;
         _botMover = GetComponent<BotMover>();
-        _isFree = true;
+        _isBusy = false;
     }
 
     public void SetResourceToCollect(Resource resource)
     {
         _resource = resource;
         _botMover.SetTarget(_resource.transform.position);
-        _isFree = false;
+        _isBusy = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -35,7 +33,7 @@ public class BotCollector : MonoBehaviour
         }
         else if (other.TryGetComponent(out Base botBase))
         {
-            _isFree = true;
+            _isBusy = false;
             Resource childrenResource = GetComponentInChildren<Resource>();
 
             if (childrenResource != null)
@@ -44,5 +42,10 @@ public class BotCollector : MonoBehaviour
                 botBase.IncreaseCollectedResourceCounter();
             }
         }
+    }
+
+    public bool IsBusy()
+    {
+        return _isBusy;
     }
 }

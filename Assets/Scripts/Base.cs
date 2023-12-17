@@ -4,20 +4,17 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    private ResourceSpawner _resourceSpawner;
+    private Scanner _scanner;
     private List<BotCollector> _bots;
     private List<Resource> _resources;
 
-    int _maxCollidersForSearch = 10;
-    int _waitTimeForSendingBot = 3;
+    int _waitTimeForSendingBot = 2;
     private int _collectedResources = 0;
 
     private void Start()
     {
-        // нужен чтобы искать ресурсы только в его области 
-        _resourceSpawner = FindObjectOfType<ResourceSpawner>();
-
-        FindBots();
+        _scanner = GetComponent<Scanner>();
+        _bots = _scanner.FindBots();
         StartCoroutine(Work());
     }
 
@@ -28,84 +25,36 @@ public class Base : MonoBehaviour
         while (true)
         {
             yield return waitTime;
-            FindFreeResources();
-            SendBotToCollect();
-        }
-    }
+            _resources = _scanner.FindResources();
 
-    private void SendBotToCollect()
-    {
-        if (TryGetFreeBot(out BotCollector freeBot) && TryGetFreeResource(out Resource freeResource))
-        {
-            freeResource.SetIsMarkedForHarvest();
-            freeBot.SetResourceToCollect(freeResource);
-        }
-    }
-
-    private bool TryGetFreeResource(out Resource resource)
-    {
-        if (_resources.Count == 0)
-        {
-            resource = null;
-            return false;
-        }
-
-        resource = _resources[0];
-        return true;
-    }
-
-    private bool TryGetFreeBot(out BotCollector freeBot)
-    {
-        foreach (BotCollector bot in _bots)
-        {
-            if (bot.IsFree)
+            if (TryGetFreeObjects(out BotCollector freeBot, _bots) &&
+                TryGetFreeObjects(out Resource freeResource, _resources))
             {
-                freeBot = bot;
+                yield return StartCoroutine(SendBotToCollect(freeBot, freeResource));
+            }
+        }
+    }
+
+    private IEnumerator SendBotToCollect(BotCollector bot, Resource resource)
+    {
+        resource.SetBusy();
+        bot.SetResourceToCollect(resource);
+        yield return null;
+    }
+
+    private bool TryGetFreeObjects<T>(out T freeObject, List<T> objects) where T : IBusyness
+    {
+        foreach (T currentObject in objects)
+        {
+            if (currentObject.IsBusy() == false)
+            {
+                freeObject = currentObject;
                 return true;
             }
         }
 
-        freeBot = null;
+        freeObject = default;
         return false;
-    }
-
-    private void FindBots()
-    {
-        _bots = new List<BotCollector>();
-        Collider[] colliders = new Collider[_maxCollidersForSearch];
-
-        // а есть ли способ указать в OverlapBoxNonAlloc слой не который игнорить, а наоборот, чтобы только его и учитывать? 
-        var size = Physics.OverlapBoxNonAlloc(
-            transform.position, transform.localScale / 2, colliders, transform.localRotation);
-
-        for (var i = 0; i < size; i++)
-        {
-            if (colliders[i].TryGetComponent(out BotCollector bot))
-            {
-                _bots.Add(bot);
-            }
-        }
-
-        Debug.Log("bots.Count = " + _bots.Count);
-    }
-
-    private void FindFreeResources()
-    {
-        _resources = new List<Resource>();
-        Transform resourceArea = _resourceSpawner.transform;
-        Collider[] colliders = new Collider[_maxCollidersForSearch];
-        var size = Physics.OverlapBoxNonAlloc(
-            resourceArea.position, resourceArea.localScale / 2, colliders, resourceArea.localRotation);
-
-        for (var i = 0; i < size; i++)
-        {
-            if (colliders[i].TryGetComponent(out Resource resource) && resource.GetIsMarkedForHarvest() == false)
-            {
-                _resources.Add(resource);
-            }
-        }
-
-        Debug.Log("FREE _resources.Count = " + _resources.Count);
     }
 
     public void IncreaseCollectedResourceCounter()
