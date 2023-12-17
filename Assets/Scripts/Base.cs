@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Scanner))]
 public class Base : MonoBehaviour
 {
     private Scanner _scanner;
     private List<BotCollector> _bots;
     private List<Resource> _resources;
 
-    int _waitTimeForSendingBot = 2;
+    private int _waitTimeForSendingBot = 1;
     private int _collectedResources = 0;
 
     private void Start()

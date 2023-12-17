@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(BotMover))]
 public class BotCollector : MonoBehaviour, IBusyness
 {
     private Resource _resource;
