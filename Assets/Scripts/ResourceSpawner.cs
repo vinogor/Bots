@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
 {
-    [SerializeField] private int _quantity = 10;
+    [SerializeField] private int _quantity = 5;
     [SerializeField] private Resource _resourcePrefab;
 
     private List<Resource> _resources;
