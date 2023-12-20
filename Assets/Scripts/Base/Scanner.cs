@@ -4,7 +4,7 @@ using UnityEngine;
 public class Scanner : MonoBehaviour
 {
     private ResourceSpawner _resourceSpawner;
-    private int _maxCollidersForSearch = 10;
+    private int _maxCollidersForSearch = 30;
 
     private void Start()
     {
@@ -14,14 +14,18 @@ public class Scanner : MonoBehaviour
     public List<Resource> FindResources()
     {
         List<Resource> resources = FindObjects<Resource>(_resourceSpawner.transform);
-        Debug.Log("resources.Count = " + resources.Count);
         return resources;
     }
 
     public List<BotCollector> FindBots()
     {
         List<BotCollector> bots = FindObjects<BotCollector>(transform);
-        Debug.Log("bots.Count = " + bots.Count);
+
+        foreach (BotCollector bot in bots)
+        {
+            bot.SetBasePosition(transform.position);
+        }
+
         return bots;
     }
 

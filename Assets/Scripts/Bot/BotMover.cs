@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class BotMover : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private float _speed = 2;
 
-    private Vector3 _targetPosition; // база или ресурс
+    private Vector3 _targetPosition;
     private bool _canMoving;
 
     private void Start()
     {
-        _speed = 2;
         _canMoving = false;
     }
 
@@ -36,6 +35,6 @@ public class BotMover : MonoBehaviour
     public void SetTarget(Vector3 position)
     {
         _canMoving = true;
-        _targetPosition = position;
+        _targetPosition = new Vector3(position.x, transform.localScale.y / 2, position.z);
     }
 }

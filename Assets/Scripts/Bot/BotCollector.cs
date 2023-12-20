@@ -10,7 +10,6 @@ public class BotCollector : MonoBehaviour, IBusyness
 
     private void Start()
     {
-        _basePosition = transform.position;
         _botMover = GetComponent<BotMover>();
         _isBusy = false;
     }
@@ -20,6 +19,17 @@ public class BotCollector : MonoBehaviour, IBusyness
         _resource = resource;
         _botMover.SetTarget(_resource.transform.position);
         _isBusy = true;
+    }
+
+    public void SetTargetToMove(Vector3 target)
+    {
+        _botMover.SetTarget(target);
+        _isBusy = true;
+    }
+
+    public void SetBasePosition(Vector3 basePosition)
+    {
+        _basePosition = basePosition;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -40,7 +50,7 @@ public class BotCollector : MonoBehaviour, IBusyness
             if (childrenResource != null)
             {
                 Destroy(childrenResource.gameObject);
-                botBase.IncreaseCollectedResourceCounter();
+                botBase.IncreaseCollectedResourceCounter(this);
             }
         }
     }
