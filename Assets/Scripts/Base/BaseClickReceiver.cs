@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(Base))]
 public class BaseClickReceiver : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private Flag _flagPrefab;

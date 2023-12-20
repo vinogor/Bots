@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Scanner))]
+[RequireComponent(typeof(Scanner), typeof(BotSpawner), typeof(BaseSpawner))]
 public class Base : MonoBehaviour
 {
     private Scanner _scanner;
